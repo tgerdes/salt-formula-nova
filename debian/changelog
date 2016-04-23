@@ -1,8 +1,11 @@
 salt-formula-nova (2016.4.2-1) unstable; urgency=medium
 
-  * d/copyright: Added onovy to Debian part
-  * Added onovy as uploader
+  [ Filip Pytloun ]
   * New upstream release
+
+  [ Ondřej Nový ]
+  * d/copyright: Added myself to Debian part
+  * Added myself as uploader
 
  -- Filip Pytloun <filip@pytloun.cz>  Sat, 23 Apr 2016 16:35:07 +0200
 
