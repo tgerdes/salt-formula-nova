@@ -4,6 +4,7 @@ nova:
     networking: default
     version: liberty
     vncproxy_url: 127.0.0.1
+    vnc_keymap: en-gb
     security_group: false
     dhcp_domain: novalocal
     scheduler_default_filters: "DifferentHostFilter,RetryFilter,AvailabilityZoneFilter,RamFilter,CoreFilter,DiskFilter,ComputeFilter,ComputeCapabilitiesFilter,ImagePropertiesFilter,ServerGroupAntiAffinityFilter,ServerGroupAffinityFilter"
@@ -51,3 +52,7 @@ nova:
       mtu: 1500
     metadata:
       password: metadata
+    audit:
+      filter_factory: 'keystonemiddleware.audit:filter_factory'
+      map_file: '/etc/pycadf/nova_api_audit_map.conf'
+

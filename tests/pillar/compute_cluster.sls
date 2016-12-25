@@ -5,6 +5,8 @@ nova:
     virtualization: kvm
     heal_instance_info_cache_interval: 60
     vncproxy_url: openstack:6080
+    report_interval: 60
+    vnc_keymap: en-gb
     bind:
       vnc_address: 127.0.0.1
       vnc_port: 6080
@@ -42,6 +44,7 @@ nova:
       region: RegionOne
       host: 127.0.0.1
       port: 9696
+      extension_sync_interval: 600
     cache:
       engine: memcached
       members:

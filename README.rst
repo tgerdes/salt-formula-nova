@@ -3,7 +3,10 @@
 Nova
 ==============
 
-OpenStack Nova provides a cloud computing fabric controller, supporting a wide variety of virtualization technologies, including KVM, Xen, LXC, VMware, and more. In addition to its native API, it includes compatibility with the commonly encountered Amazon EC2 and S3 APIs.
+OpenStack Nova provides a cloud computing fabric controller, supporting a wide
+variety of virtualization technologies, including KVM, Xen, LXC, VMware, and
+more. In addition to its native API, it includes compatibility with the
+commonly encountered Amazon EC2 and S3 APIs.
 
 Sample pillars
 ==============
@@ -24,6 +27,7 @@ Nova services on the controller node
         ram_allocation_ratio: 1.0
         disk_allocation_ratio: 1.0
         workers: 8
+        report_interval: 60
         bind:
           public_address: 10.0.0.122
           public_name: openstack.domain.com
@@ -53,6 +57,7 @@ Nova services on the controller node
           engine: neutron
           host: 127.0.0.1
           port: 9696
+          extension_sync_interval: 600
           identity:
             engine: keystone
             host: 127.0.0.1
@@ -62,6 +67,8 @@ Nova services on the controller node
             tenant: service
         metadata:
           password: password
+        audit:
+          enabled: false
 
 
 Nova services from custom package repository
@@ -93,6 +100,20 @@ Client-side RabbitMQ HA setup
          user: openstack
          password: pwd
          virtual_host: '/openstack'
+      ....
+
+
+Enable auditing filter, ie: CADF
+
+.. code-block:: yaml
+
+    nova:
+      controller:
+        autidt:
+          enabled: true
+      ....
+          filter_factory: 'keystonemiddleware.audit:filter_factory'
+          map_file: '/etc/pycadf/nova_api_audit_map.conf'
       ....
 
 
@@ -154,7 +175,6 @@ Nova controller services on compute node
           max_files: 4096
           max_processes: 4096
 
-
 Nova services on compute node with OpenContrail
 
 .. code-block:: yaml
@@ -202,10 +222,43 @@ Client-side RabbitMQ HA setup
       ....
 
 
+Nova with ephemeral configured with Ceph
 
-Read more
-=========
+.. code-block:: yaml
 
-* http://docs.openstack.org/developer/nova/
-* http://lists.openstack.org/cgi-bin/mailman/listinfo/openstack-dev
-* http://bugs.launchpad.net/nova
+    nova:
+      compute:
+        enabled: true
+        ...
+        ceph:
+          ephemeral: yes
+          rbd_pool: nova
+          rbd_user: nova
+          secret_uuid: 03006edd-d957-40a3-ac4c-26cd254b3731
+
+
+Documentation and Bugs
+============================
+
+To learn how to deploy OpenStack Salt, consult the documentation available
+online at:
+
+    https://wiki.openstack.org/wiki/OpenStackSalt
+
+In the unfortunate event that bugs are discovered, they should be reported to
+the appropriate bug tracker. If you obtained the software from a 3rd party
+operating system vendor, it is often wise to use their own bug tracker for
+reporting problems. In all other cases use the master OpenStack bug tracker,
+available at:
+
+    http://bugs.launchpad.net/openstack-salt
+
+Developers wishing to work on the OpenStack Salt project should always base
+their work on the latest formulas code, available from the master GIT
+repository at:
+
+    https://git.openstack.org/cgit/openstack/salt-formula-nova
+
+Developers should also join the discussion on the IRC list, at:
+
+    https://wiki.openstack.org/wiki/Meetings/openstack-salt

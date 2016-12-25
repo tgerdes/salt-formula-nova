@@ -7,20 +7,26 @@
 
 {% set controller = salt['grains.filter_by']({
     'Debian': {
-        'pkgs': ['nova-novncproxy', 'novnc', 'nova-api', 'nova-ajax-console-proxy', 'nova-cert', 'nova-conductor', 'nova-consoleauth', 'nova-doc', 'nova-scheduler', 'python-novaclient', 'python-memcache'],
+        'pkgs': ['nova-consoleproxy', 'novnc', 'nova-api', 'nova-cert', 'nova-conductor', 'nova-consoleauth', 'nova-doc', 'nova-scheduler', 'python-novaclient', 'python-memcache', 'gettext-base', 'python-pycadf'],
         'services': ['nova-api', 'nova-cert', 'nova-consoleauth', 'nova-scheduler', 'nova-conductor', 'nova-novncproxy'],
         'debug': false,
+        'audit': {
+          'enabled': false
+        },
     },
     'RedHat': {
-        'pkgs': ['openstack-nova-novncproxy', 'python-nova', 'openstack-nova-api', 'openstack-nova-console', 'openstack-nova-scheduler', 'python-novaclient', 'openstack-nova-common', 'openstack-nova-conductor', 'openstack-nova-cert'],
+        'pkgs': ['openstack-nova-novncproxy', 'python-nova', 'openstack-nova-api', 'openstack-nova-console', 'openstack-nova-scheduler', 'python-novaclient', 'openstack-nova-common', 'openstack-nova-conductor', 'openstack-nova-cert', 'python-pycadf'],
         'services': ['openstack-nova-api', 'openstack-nova-cert', 'openstack-nova-consoleauth', 'openstack-nova-scheduler', 'openstack-nova-conductor', 'openstack-nova-novncproxy'],
         'debug': false,
+        'audit': {
+          'enabled': false
+        },
     },
-}, merge=salt['pillar.get']('nova:controller')) %}
+}, merge=pillar.nova.get('controller', {})) %}
 
 {% set compute = salt['grains.filter_by']({
     'Debian': {
-        'pkgs': ['nova-compute-kvm', 'python-novaclient', 'pm-utils', 'sysfsutils', 'sg3-utils', 'libvirt-bin', 'python-memcache', 'qemu-kvm','python-guestfs'],
+        'pkgs': ['nova-compute-kvm', 'python-novaclient', 'pm-utils', 'sysfsutils', 'sg3-utils', 'libvirt-bin', 'python-memcache', 'qemu-kvm','python-guestfs', 'gettext-base'],
         'services': ['nova-compute'],
         'libvirt_config': 'libvirtd.conf',
         'libvirt_service': 'libvirtd',
@@ -55,4 +61,9 @@
         'libvirt_bin': '/etc/default/libvirt-bin',
         'libvirt_service': 'libvirt-bin',
     },
-}, grain='oscodename', merge=salt['pillar.get']('nova:compute'))) %}
+}, grain='oscodename', merge=pillar.nova.get('compute', {}))) %}
+
+{%- if salt['pillar.get']('linux:system:repo:mirantis_openstack' , False) or salt['pillar.get']('linux:system:repo:mirantis' , False) %}
+{%- do compute.update({'libvirt_bin': '/etc/default/libvirtd'}) %}
+{%- do compute.update({'libvirt_service': 'libvirtd'}) %}
+{%- endif %}
