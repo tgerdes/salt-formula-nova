@@ -181,8 +181,10 @@ ceph_virsh_secret_set_value:
   - template: jinja
   - require:
     - pkg: nova_compute_packages
+{%- if not grains.get('noservices', False) %}
   - watch_in:
     - service: {{ compute.libvirt_service }}
+{%- endif %}
 {%- endif %}
 
 /etc/libvirt/qemu.conf:
@@ -206,6 +208,7 @@ virsh net-undefine default:
     - pkg: nova_compute_packages
   - onlyif: "virsh net-list | grep default"
 
+{%- if not grains.get('noservices', False) %}
 {{ compute.libvirt_service }}:
   service.running:
   - enable: true
@@ -215,6 +218,7 @@ virsh net-undefine default:
   - watch:
     - file: /etc/libvirt/{{ compute.libvirt_config }}
     - file: /etc/libvirt/qemu.conf
+{%- endif %}
 
 {%- if grains.get('init', None) == "upstart" %}
 # MOS9 libvirt fix for upstart
