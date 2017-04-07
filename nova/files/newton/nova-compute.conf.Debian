@@ -15,7 +15,6 @@ config_drive_format=vfat
 force_config_drive=True
 force_raw_images=True
 notify_api_faults=False
-allow_resize_to_same_host=True
 security_group_api=neutron
 vif_plugging_is_fatal=True
 vif_plugging_timeout=300
