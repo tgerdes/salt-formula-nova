@@ -410,6 +410,20 @@ Specify a custom host manager.
     controller:
       scheduler_host_manager: ironic_host_manager
 
+libvirt CPU mode
+----------------
+
+Allow setting the model of CPU that is exposed to a VM. This allows better
+support live migration between hypervisors with different hardware, among other
+things. Defaults to host-passthrough.
+
+.. code-block:: yaml
+
+  nova:
+    compute:
+      cpu_mode: host-model
+
+
 
 Documentation and Bugs
 ======================
